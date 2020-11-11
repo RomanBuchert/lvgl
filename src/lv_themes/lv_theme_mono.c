@@ -38,6 +38,7 @@ typedef struct {
     lv_style_t pad_normal;
     lv_style_t pad_small;
     lv_style_t pad_inner;
+    lv_style_t txt_underline;
 
 #if LV_USE_ARC
     lv_style_t arc_bg, arc_indic;
@@ -114,6 +115,8 @@ static void basic_init(void)
     lv_style_set_bg_opa(&styles->scr, LV_STATE_DEFAULT, LV_OPA_COVER);
     lv_style_set_bg_color(&styles->scr, LV_STATE_DEFAULT, BG_COLOR);
     lv_style_set_text_color(&styles->scr, LV_STATE_DEFAULT, FG_COLOR);
+    lv_style_set_text_sel_color(&styles->scr, LV_STATE_DEFAULT, BG_COLOR);
+    lv_style_set_text_sel_bg_color(&styles->scr, LV_STATE_DEFAULT, FG_COLOR);
     lv_style_set_value_color(&styles->scr, LV_STATE_DEFAULT, FG_COLOR);
 
     style_init_reset(&styles->bg);
@@ -122,6 +125,8 @@ static void basic_init(void)
     lv_style_set_bg_opa(&styles->bg, LV_STATE_DEFAULT, LV_OPA_COVER);
     lv_style_set_bg_color(&styles->bg, LV_STATE_DEFAULT, BG_COLOR);
     lv_style_set_border_width(&styles->bg, LV_STATE_DEFAULT, BORDER_WIDTH);
+    lv_style_set_border_width(&styles->bg, LV_STATE_FOCUSED, BORDER_WIDTH * 2);
+    lv_style_set_border_width(&styles->bg, LV_STATE_FOCUSED | LV_STATE_EDITED, BORDER_WIDTH * 3);
     lv_style_set_border_color(&styles->bg, LV_STATE_DEFAULT, FG_COLOR);
     lv_style_set_line_width(&styles->bg, LV_STATE_DEFAULT, LV_MATH_MAX(LV_DPI / 100, 1));
     lv_style_set_scale_end_line_width(&styles->bg, LV_STATE_DEFAULT, LV_MATH_MAX(LV_DPI / 100, 1));
@@ -139,10 +144,11 @@ static void basic_init(void)
     style_init_reset(&styles->clip_corner);
     lv_style_set_clip_corner(&styles->clip_corner, LV_STATE_DEFAULT, true);
 
-
     style_init_reset(&styles->btn);
     lv_style_set_radius(&styles->btn, LV_STATE_DEFAULT, RADIUS);
     lv_style_set_border_width(&styles->btn, LV_STATE_DEFAULT, BORDER_WIDTH);
+    lv_style_set_border_width(&styles->btn, LV_STATE_FOCUSED, BORDER_WIDTH + 1);
+    lv_style_set_border_width(&styles->btn, LV_STATE_FOCUSED | LV_STATE_EDITED, BORDER_WIDTH + 2);
     lv_style_set_border_color(&styles->btn, LV_STATE_DEFAULT, FG_COLOR);
     lv_style_set_bg_color(&styles->btn, LV_STATE_DEFAULT, BG_COLOR);
     lv_style_set_bg_color(&styles->btn, LV_STATE_PRESSED, FG_COLOR);
@@ -204,6 +210,9 @@ static void basic_init(void)
 
     style_init_reset(&styles->pad_inner);
     lv_style_set_pad_inner(&styles->pad_inner, LV_STATE_DEFAULT, LV_DPI / 15);
+
+    style_init_reset(&styles->txt_underline);
+    lv_style_set_text_decor(&styles->txt_underline, LV_STATE_FOCUSED, LV_TEXT_DECOR_UNDERLINE);
 }
 
 static void arc_init(void)
@@ -589,6 +598,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             list = lv_obj_get_style_list(obj, LV_BTN_PART_MAIN);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 #endif
 
@@ -600,6 +610,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             list = lv_obj_get_style_list(obj, LV_BTNMATRIX_PART_BTN);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 #endif
 
@@ -714,6 +725,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->round);
             _lv_style_list_add_style(list, &styles->pad_small);
+            _lv_style_list_add_style(list, &styles->fg_color);
             break;
 #endif
 
@@ -725,6 +737,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             list = lv_obj_get_style_list(obj, LV_CHECKBOX_PART_BULLET);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->pad_small);
             break;
 #endif
 
@@ -741,6 +754,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             list = lv_obj_get_style_list(obj, LV_MSGBOX_PART_BTN);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 
 #endif
@@ -775,6 +789,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             list = lv_obj_get_style_list(obj, LV_TABVIEW_PART_TAB_BTN);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 
         case LV_THEME_TABVIEW_PAGE:
@@ -834,6 +849,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
             _lv_style_list_add_style(list, &styles->list_btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
 
             break;
 #endif
@@ -872,26 +888,21 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             break;
 #endif
 #if LV_USE_TABLE
-        case LV_THEME_TABLE:
-            list = lv_obj_get_style_list(obj, LV_TABLE_PART_BG);
-            _lv_style_list_add_style(list, &styles->bg);
+        case LV_THEME_TABLE: {
+                list = lv_obj_get_style_list(obj, LV_TABLE_PART_BG);
+                _lv_style_list_add_style(list, &styles->bg);
 
-            list = lv_obj_get_style_list(obj, LV_TABLE_PART_CELL1);
-            _lv_style_list_add_style(list, &styles->bg);
-            _lv_style_list_add_style(list, &styles->no_radius);
-
-            list = lv_obj_get_style_list(obj, LV_TABLE_PART_CELL2);
-            _lv_style_list_add_style(list, &styles->bg);
-            _lv_style_list_add_style(list, &styles->no_radius);
-
-            list = lv_obj_get_style_list(obj, LV_TABLE_PART_CELL3);
-            _lv_style_list_add_style(list, &styles->bg);
-            _lv_style_list_add_style(list, &styles->no_radius);
-
-            list = lv_obj_get_style_list(obj, LV_TABLE_PART_CELL4);
-            _lv_style_list_add_style(list, &styles->bg);
-            _lv_style_list_add_style(list, &styles->no_radius);
-            break;
+                int idx = 1; /* start value should be 1, not zero, since cell styles
+                            start at 1 due to presence of LV_TABLE_PART_BG=0
+                            in the enum (lv_table.h) */
+                /* declaring idx outside loop to work with older compilers */
+                for(; idx <= LV_TABLE_CELL_STYLE_CNT; idx ++) {
+                    list = lv_obj_get_style_list(obj, idx);
+                    _lv_style_list_add_style(list, &styles->bg);
+                    _lv_style_list_add_style(list, &styles->no_radius);
+                }
+                break;
+            }
 #endif
 
 #if LV_USE_WIN
@@ -940,12 +951,14 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
             _lv_style_list_add_style(list, &styles->fg_color);
             _lv_style_list_add_style(list, &styles->pad_none);
             _lv_style_list_add_style(list, &styles->no_radius);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 
         case LV_THEME_SPINBOX_BTN:
             list = lv_obj_get_style_list(obj, LV_BTN_PART_MAIN);
             _lv_style_list_add_style(list, &styles->bg);
             _lv_style_list_add_style(list, &styles->btn);
+            _lv_style_list_add_style(list, &styles->txt_underline);
             break;
 #endif
 
@@ -1007,7 +1020,7 @@ static void theme_apply(lv_theme_t * th, lv_obj_t * obj, lv_theme_style_t name)
     }
 
 
-    lv_obj_refresh_style(obj, LV_STYLE_PROP_ALL);
+    lv_obj_refresh_style(obj, LV_OBJ_PART_ALL, LV_STYLE_PROP_ALL);
 
 
 }
